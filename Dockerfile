@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 # منع التفاعل أثناء التثبيت لضمان عدم توقف البناء سحابياً
 ENV DEBIAN_FRONTEND=noninteractive
 
-# تثبيت التحديثات وحزم الواجهة الرسومية وخادم noVNC وبيئة تشغيل تطبيقات ويندوز/الـ .NET
+# تثبيت التحديثات الأساسية وحزم الواجهة الرسومية وخادم noVNC وبيئة تشغيل تطبيقات ويندوز/الـ .NET
 RUN apt-get update && apt-get install -y \
     xvfb \
     x11vnc \
@@ -13,20 +13,23 @@ RUN apt-get update && apt-get install -y \
     wine64 \
     mono-complete \
     curl \
+    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-# تحميل وتثبيت أداة Ngrok الرسمية داخل النظام
-RUN curl -s https://bin.equinox.io/c/bNyj1mQcaGS/ngrok-stable-linux-amd64.tgz | tar xz -C /usr/local/bin
+# تثبيت أداة Ngrok الرسمية عبر مستودع الحزم المعتمد لنظام Ubuntu
+RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | gpg --dearmor -o /etc/apt/keyrings/ngrok.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/ngrok.gpg] https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list && \
+    apt-get update && apt-get install -y ngrok
 
 WORKDIR /app
 
-# نسخ جميع ملفات المشروع (بما فيها ملف الـ .exe) من المستودع إلى الحاوية
+# نسخ جميع ملفات المشروع من المستودع إلى الحاوية
 COPY . /app
 
 # Render يفرض فتح منفذ للويب، المنفذ الافتراضي للخطة المجانية هو 10000
 EXPOSE 10000
 
-# كتابة سكريبت الإقلاع لتشغيل النظام الرسومي والنفق والبرنامج معاً عند بدء السيرفر
+# كتابة سكريبت الإقلاع لتشغيل النظام الرسومي والنفق والبرنامج معاً
 RUN echo '#!/bin/bash\n\
 # 1. تشغيل خادم العرض الافتراضي في الخلفية لتوليد واجهة رسومية\n\
 Xvfb :1 -screen 0 1024x768x16 &\n\
