@@ -4,18 +4,6 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # تثبيت التحديثات الأساسية وحزم الواجهة الرسومية وخادم noVNC وبيئة تشغيل تطبيقات ويندوز/الـ .NET
-RUN apt-get update && apt-get install -y \
-    xvfb \
-    x11vnc \
-    novnc \
-    websockify \
-    fluxbox \
-    wine64 \
-    mono-complete \
-    curl \
-    gnupg \
-    && rm -rf /var/lib/apt/lists/*
-    # تمكين معمارية 32-بت
 RUN dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y \
     xvfb \
@@ -29,7 +17,6 @@ RUN dpkg --add-architecture i386 && \
     curl \
     gnupg \
     && rm -rf /var/lib/apt/lists/*
-
 # تثبيت أداة Ngrok الرسمية عبر مستودع الحزم المعتمد لنظام Ubuntu
 RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | gpg --dearmor -o /etc/apt/keyrings/ngrok.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/ngrok.gpg] https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list && \
