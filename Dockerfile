@@ -11,6 +11,7 @@ RUN dpkg --add-architecture i386 && \
     fluxbox \
     wine32 \
     wine64 \
+    winetricks \
     curl \
     gnupg \
     && rm -rf /var/lib/apt/lists/*
@@ -21,7 +22,6 @@ RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | gpg --dearmor -o /e
 
 WORKDIR /app
 
-# استخدم الاسم الجديد للملف (بدون مسافات)
 COPY SpyNote.exe /app/app.exe
 
 EXPOSE 10000
@@ -31,9 +31,11 @@ Xvfb :1 -screen 0 1024x768x16 &\n\
 export DISPLAY=:1\n\
 sleep 3\n\
 fluxbox &\n\
+sleep 1\n\
 x11vnc -forever -shared -nopw -display :1 -rfbport 5900 -bg -o /app/x11vnc.log\n\
 sleep 2\n\
-wine /app/app.exe 2>&1 | tee /app/wine.log &\n\
+winetricks -q dotnet40 2>&1 | tee /app/winetricks.log\n\
+wine explorer /desktop=spynote,1024x768 /app/app.exe 2>&1 | tee /app/wine.log &\n\
 websockify --web /usr/share/novnc/ 10000 localhost:5900\n\
 ' > /app/start.sh && chmod +x /app/start.sh
 
